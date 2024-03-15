@@ -9,6 +9,9 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    "@typescript-eslint/naming-convention": "off",
+    "no-unused-vars": "off",
+    "id-blacklist": "off",
     "unicorn/no-null": "off",
     "unicorn/consistent-function-scoping": "off",
     "@typescript-eslint/explicit-function-return-type": "off",

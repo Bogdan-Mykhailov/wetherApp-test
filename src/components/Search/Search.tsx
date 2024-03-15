@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { OptionsOrGroups } from 'react-select'
 import { AsyncPaginate } from 'react-select-async-paginate'
 import { geoApi } from '../../api/geo/geo'
@@ -6,11 +6,15 @@ import { ResponseDataModel } from '../../api/geo/model'
 
 interface Props {
   onSearchChange: ( searchData: string ) => void
+  setSearch: ( searchData: ResponseDataModel ) => void
+  search: ResponseDataModel | null
 }
 
-export const Search: React.FC<Props> = ( { onSearchChange } ) => {
-  const [search, setSearch] = useState( null )
-
+export const Search: React.FC<Props> = ( {
+  onSearchChange,
+  setSearch,
+  search,
+} ) => {
   const handleOnChange = ( searchData: any ) => {
     setSearch( searchData )
     onSearchChange( searchData )
@@ -36,7 +40,7 @@ export const Search: React.FC<Props> = ( { onSearchChange } ) => {
     <div>
       <AsyncPaginate
         placeholder="Search for city"
-        debounceTimeout={600}
+        debounceTimeout={1000}
         value={search}
         onChange={handleOnChange}
         loadOptions={loadOptions}

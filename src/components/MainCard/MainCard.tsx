@@ -6,18 +6,20 @@ import { WeatherModel } from '../../api/geo/model'
 
 interface Props {
   weatherData: WeatherModel
+  removeCard: ( id: number ) => void
 }
 
-export const MainCard: FC<Props> = ( { weatherData } ) => {
-  const { city, weather } = weatherData
-
-  window.console.log( weather )
+export const MainCard: FC<Props> = ( {
+  weatherData,
+  removeCard,
+} ) => {
+  const { city, id, weather } = weatherData
 
   return (
     <Card
       style={{ 'width': 300 }}
       actions={[
-        <DeleteOutlined key="delete"/>,
+        <DeleteOutlined key="delete" onClick={() => removeCard( id )}/>,
         <SyncOutlined/>,
       ]}
     >

@@ -33,5 +33,9 @@ export const MainRoutes: FC = () => <Routes>
     .map( ( {
       path,
       element,
-    } ) => <Route path={path} key={path} element={element} /> )}
+    } ) => <Route
+      path={path}
+      key={path}
+      element={element}
+    /> )}
 </Routes>

@@ -1,17 +1,17 @@
-import { Search } from '../../components'
+import { MainCard, Search } from '../../components'
 import {
-  setForecastData,
-  setWeatherData,
-  useAppDispatch,
-  useAppSelector,
+  addCard, removeCardById,
+  setForecastData, setWeatherData,
+  useAppDispatch, useAppSelector,
 } from '../../services'
 import { API_KEY, WEATHER_API_URL } from '../../api/geo/geo'
-import { CardWrapper } from '../../components/CardWrapper'
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import { ResponseDataModel } from '../../api/geo/model.ts'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
-  const weather = useAppSelector( ( state ) => state.weather )
+  const cards = useAppSelector( ( state ) => state.weather.cards )
+  const [search, setSearch] = useState<ResponseDataModel | null>( null )
 
   const handleOnSearchChange = ( searchData: any ): void => {
     const [lat, lon] = searchData.value.split( ' ' )
@@ -41,17 +41,36 @@ export const Home: FC = () => {
             ...forecastResponse,
           } ),
         )
+
+        dispatch( addCard( {
+          'city': searchData.label,
+          ...weatherResponse,
+        } ) )
+
+        setSearch( null )
       } )
       .catch( ( error ) => {
         throw new Error( error.message )
       } )
   }
 
+  const removeCard = ( id: number ) => {
+    dispatch( removeCardById( id ) )
+  }
+
   return (
     <div>
-      <Search onSearchChange={handleOnSearchChange} />
+      <Search
+        search={search}
+        setSearch={setSearch}
+        onSearchChange={handleOnSearchChange}
+      />
 
-      {weather && <CardWrapper weatherData={weather}/>}
+      {cards.map( ( card ) => <MainCard
+        key={card.city}
+        weatherData={card}
+        removeCard={removeCard}
+      /> )}
 
     </div>
   )
