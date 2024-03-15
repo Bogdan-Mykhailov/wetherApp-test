@@ -1,7 +1,7 @@
 import { MainCard, Search } from '../../components'
 import {
   addCard, removeCardById,
-  setForecastData, setWeatherData,
+  setForecastData, setWeatherData, updateCardById,
   useAppDispatch, useAppSelector,
 } from '../../services'
 import { API_KEY, WEATHER_API_URL } from '../../api/geo/geo'
@@ -58,6 +58,14 @@ export const Home: FC = () => {
     dispatch( removeCardById( id ) )
   }
 
+  const updateCard = ( { id, lat, lon }: {
+    id: number
+    lat: number
+    lon: number
+  } ) => {
+    dispatch( updateCardById( { id, lat, lon } ) )
+  }
+
   return (
     <div>
       <Search
@@ -70,6 +78,7 @@ export const Home: FC = () => {
         key={card.city}
         weatherData={card}
         removeCard={removeCard}
+        updateCard={updateCard}
       /> )}
 
     </div>

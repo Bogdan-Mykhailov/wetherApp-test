@@ -1,14 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { WeatherModel } from '../../../api/geo/model'
+import { API_KEY, WEATHER_API_URL } from '../../../api/geo/geo.ts'
 
 interface WeatherState {
   currentWeather: WeatherModel
   cards: WeatherModel[]
+  selectedCardId: number | null
 }
 
 const initialState: WeatherState = {
   'currentWeather': {} as WeatherModel,
   'cards': JSON.parse( localStorage.getItem( 'cards' ) || '[]' ),
+  'selectedCardId': null,
 }
 
 const weather = createSlice( {
@@ -26,6 +29,16 @@ const weather = createSlice( {
         localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
       }
     },
+    'updateCard': ( state, action: PayloadAction<{
+      id: number
+      newData: WeatherModel
+    }> ) => {
+      const { id, newData } = action.payload
+      state.cards = state.cards
+        .map( ( card ) => card.id === id ? newData : card )
+      localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
+      state.selectedCardId = id
+    },
     'removeCardById': ( state, action: PayloadAction<number> ) => {
       const idToRemove = action.payload
       state.cards = state.cards.filter( ( card ) => card.id !== idToRemove )
@@ -33,6 +46,20 @@ const weather = createSlice( {
     },
   },
 } )
+
+export const updateCardById = createAsyncThunk(
+  'weather/updateCard',
+  async ( { id, lat, lon }: {
+    id: number
+    lat: number
+    lon: number
+  } ) => {
+    const response = await fetch( `${WEATHER_API_URL}/weather?lat=${lat}&lon=${
+      lon}&appid=${API_KEY}&units=metric` )
+    const updatedData = await response.json()
+    return { id, updatedData }
+  },
+)
 
 export const { setWeatherData, addCard, removeCardById } = weather.actions
 export const weatherSlice = weather.reducer
