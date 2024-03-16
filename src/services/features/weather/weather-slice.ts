@@ -1,43 +1,48 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit'
 import { WeatherModel } from '../../../api/geo/model'
-import { API_KEY, WEATHER_API_URL } from '../../../api/geo/geo.ts'
+import { setLoading } from '../app'
+import { API_KEY, WEATHER_API_URL } from '../../../api/geo/geo'
 
 interface WeatherState {
   currentWeather: WeatherModel
   cards: WeatherModel[]
-  selectedCardId: number | null
 }
 
 const initialState: WeatherState = {
   'currentWeather': {} as WeatherModel,
   'cards': JSON.parse( localStorage.getItem( 'cards' ) || '[]' ),
-  'selectedCardId': null,
 }
 
 const weather = createSlice( {
   'name': 'weather',
   initialState,
   'reducers': {
-    'setWeatherData': ( state, action: PayloadAction<WeatherModel> ) => {
-      state.currentWeather = action.payload
+    'setWeatherData': ( state, action: PayloadAction<{
+      id: number
+      city: string
+      data: WeatherModel
+    }> ) => {
+      const { id, city, data } = action.payload
+      const isDuplicate = state.cards
+        .some( ( card ) => card.city === city )
+      if ( !isDuplicate ) {
+        state.cards = state.cards.map( ( card ) => {
+          if ( card.id === id ) {
+            return data
+          }
+          return card
+        } )
+      }
+      localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
     },
     'addCard': ( state, action: PayloadAction<WeatherModel> ) => {
       const newCard = action.payload
-      const isDuplicate = state.cards.some( ( card ) => card.id === newCard.id )
+      const isDuplicate = state.cards
+        .some( ( card ) => card.id === newCard.id )
       if ( !isDuplicate ) {
         state.cards.push( newCard )
         localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
       }
-    },
-    'updateCard': ( state, action: PayloadAction<{
-      id: number
-      newData: WeatherModel
-    }> ) => {
-      const { id, newData } = action.payload
-      state.cards = state.cards
-        .map( ( card ) => card.id === id ? newData : card )
-      localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
-      state.selectedCardId = id
     },
     'removeCardById': ( state, action: PayloadAction<number> ) => {
       const idToRemove = action.payload
@@ -47,19 +52,29 @@ const weather = createSlice( {
   },
 } )
 
-export const updateCardById = createAsyncThunk(
-  'weather/updateCard',
-  async ( { id, lat, lon }: {
-    id: number
-    lat: number
-    lon: number
-  } ) => {
-    const response = await fetch( `${WEATHER_API_URL}/weather?lat=${lat}&lon=${
-      lon}&appid=${API_KEY}&units=metric` )
-    const updatedData = await response.json()
-    return { id, updatedData }
-  },
-)
+export const updateCard = ( { lat, lon, id, city }: {
+  lat: number
+  lon: number
+  id: number
+  city: string
+} ) => async ( dispatch: Dispatch ) => {
+  dispatch( setLoading( true ) )
+  try {
+    const response = await fetch( `${WEATHER_API_URL}/weather?lat=${
+      lat}&lon=${lon}&appid=${API_KEY}&units=metric` )
+    const updatedData: WeatherModel = await response.json()
+    updatedData.city = city
+    dispatch( setWeatherData( { id, city, 'data': updatedData } ) )
+    dispatch( setLoading( false ) )
+  } catch ( error ) {
+    dispatch( setLoading( false ) )
+    throw error
+  }
+}
 
-export const { setWeatherData, addCard, removeCardById } = weather.actions
+export const {
+  setWeatherData,
+  addCard,
+  removeCardById,
+} = weather.actions
 export const weatherSlice = weather.reducer
