@@ -6,22 +6,22 @@ import { DetailedWeatherInfo, Home, NotFound } from '../pages'
 import { PATH } from './types'
 
 export const routeConfig: Record<PATH, RouteProps> = {
-  [PATH.MAIN]: {
+  [PATH.Main]: {
     'path': RoutePath.main,
     'element': <Home />,
   },
 
-  [PATH.DETAILED_WEATHER_INFO]: {
+  [PATH.Info]: {
     'path': RoutePath.info,
     'element': <DetailedWeatherInfo />,
   },
 
-  [PATH.HOME]: {
+  [PATH.Home]: {
     'path': RoutePath.home,
-    'element': <Navigate to={PATH.HOME} replace />,
+    'element': <Navigate to={PATH.Home} replace />,
   },
 
-  [PATH.ERROR]: {
+  [PATH.Error]: {
     'path': RoutePath.error,
     'element': <NotFound />,
   },

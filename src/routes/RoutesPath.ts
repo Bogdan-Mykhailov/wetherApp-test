@@ -1,8 +1,8 @@
 import { PATH } from './types'
 
 export const RoutePath: Record<PATH, string> = {
-  [PATH.MAIN]: '/',
-  [PATH.HOME]: '/home',
-  [PATH.DETAILED_WEATHER_INFO]: '/info',
-  [PATH.ERROR]: '*',
+  [PATH.Main]: '/',
+  [PATH.Home]: '/home',
+  [PATH.Info]: '/info/:id',
+  [PATH.Error]: '*',
 }

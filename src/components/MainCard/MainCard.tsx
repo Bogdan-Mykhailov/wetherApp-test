@@ -1,8 +1,9 @@
 import { FC } from 'react'
 import { Avatar, Card } from 'antd'
 import Meta from 'antd/es/card/Meta'
-import { DeleteOutlined, SyncOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EnterOutlined, SyncOutlined } from '@ant-design/icons'
 import { WeatherModel } from '../../api/geo/model'
+import { useNavigate } from 'react-router'
 
 type CardType = {
   lat: number
@@ -24,6 +25,7 @@ export const MainCard: FC<Props> = ( {
   updateCard,
   isLoading,
 } ) => {
+  const navigate = useNavigate()
   const { city, id, weather, coord, main } = weatherData
   const { lat, lon } = coord
 
@@ -47,6 +49,9 @@ export const MainCard: FC<Props> = ( {
         <SyncOutlined
           spin={isLoading}
           onClick={updateData}
+        />,
+        <EnterOutlined
+          onClick={() => navigate( `/info/${id}` )}
         />,
       ]}
     >

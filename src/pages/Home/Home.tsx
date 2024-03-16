@@ -33,7 +33,6 @@ export const Home: FC = () => {
 
     const weatherData = await weatherResponse.json()
     const forecastData = await forecastResponse.json()
-
     return { weatherData, forecastData }
   }
 

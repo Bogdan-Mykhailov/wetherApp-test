@@ -1,6 +1,6 @@
 export enum PATH {
-  MAIN = 'main',
-  DETAILED_WEATHER_INFO = 'info',
-  HOME = 'home',
-  ERROR = 'error',
+  Main = 'main',
+  Info = 'info',
+  Home = 'home',
+  Error = 'error',
 }
