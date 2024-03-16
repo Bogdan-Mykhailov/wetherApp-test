@@ -1,69 +1,98 @@
-import { MainCard, Search } from '../../components'
+import { MainCard, Notification, Search } from '../../components'
 import {
-  addCard, removeCardById,
-  setForecastData, setWeatherData, updateCardById,
-  useAppDispatch, useAppSelector,
+  addCard,
+  removeCardById,
+  setError,
+  setForecastData,
+  setLoading,
+  setWeatherData,
+  updateCard,
+  useAppDispatch,
+  useAppSelector,
 } from '../../services'
 import { API_KEY, WEATHER_API_URL } from '../../api/geo/geo'
 import { FC, useState } from 'react'
 import { ResponseDataModel } from '../../api/geo/model.ts'
+import { ErrorType } from '../../types/Types.ts'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
+  const { isError, isLoading } = useAppSelector( ( state ) => state.app )
   const cards = useAppSelector( ( state ) => state.weather.cards )
   const [search, setSearch] = useState<ResponseDataModel | null>( null )
 
-  const handleOnSearchChange = ( searchData: any ): void => {
-    const [lat, lon] = searchData.value.split( ' ' )
-    const currentWeatherFetch = fetch(
-      `${WEATHER_API_URL}/weather?lat=${lat}&lon=${
-        lon}&appid=${API_KEY}&units=metric`,
-    )
-    const forecastFetch = fetch(
-      `${WEATHER_API_URL}/forecast?lat=${lat}&lon=${
-        lon}&appid=${API_KEY}&units=metric`,
-    )
+  const fetchWeatherData = async ( lat: string, lon: string ) => {
+    const weatherResponse = await fetch( `${WEATHER_API_URL}/weather?lat=${
+      lat}&lon=${lon}&appid=${API_KEY}&units=metric` )
+    const forecastResponse = await fetch( `${WEATHER_API_URL}/forecast?lat=${
+      lat}&lon=${lon}&appid=${API_KEY}&units=metric` )
 
-    Promise.all( [currentWeatherFetch, forecastFetch] )
-      .then( async ( res ) => {
-        const weatherResponse = await res[0].json()
-        const forecastResponse = await res[1].json()
+    if ( !weatherResponse.ok || !forecastResponse.ok ) {
+      throw new Error( 'Failed to fetch weather data' )
+    }
 
-        dispatch(
-          setWeatherData( {
-            'city': searchData.label,
-            ...weatherResponse,
-          } ),
-        )
-        dispatch(
-          setForecastData( {
-            'city': searchData.label,
-            ...forecastResponse,
-          } ),
-        )
+    const weatherData = await weatherResponse.json()
+    const forecastData = await forecastResponse.json()
 
-        dispatch( addCard( {
-          'city': searchData.label,
-          ...weatherResponse,
-        } ) )
+    return { weatherData, forecastData }
+  }
 
-        setSearch( null )
-      } )
-      .catch( ( error ) => {
-        throw new Error( error.message )
-      } )
+  const handleOnSearchChange = async ( searchData: any ) => {
+    try {
+      dispatch( setLoading( true ) )
+      const [lat, lon] = searchData.value.split( ' ' )
+      const { weatherData, forecastData } = await fetchWeatherData( lat, lon )
+
+      dispatch( setForecastData( {
+        'city': searchData.label,
+        ...forecastData,
+      } ) )
+
+      dispatch( setWeatherData( {
+        'city': searchData.label,
+        ...weatherData,
+      } ) )
+
+      dispatch( addCard( {
+        'city': searchData.label,
+        ...weatherData,
+      } ) )
+
+      setSearch( null )
+    } catch {
+      dispatch( setError( ErrorType.FETCHING_DATA ) )
+    } finally {
+      dispatch( setLoading( false ) )
+    }
   }
 
   const removeCard = ( id: number ) => {
-    dispatch( removeCardById( id ) )
+    try {
+      dispatch( setLoading( true ) )
+      dispatch( removeCardById( id ) )
+    } catch {
+      dispatch( setError( ErrorType.REMOVE_CARD ) )
+    } finally {
+      dispatch( setLoading( false ) )
+      dispatch( setError( ErrorType.NONE ) )
+    }
   }
 
-  const updateCard = ( { id, lat, lon }: {
-    id: number
+  const updateWeather = ( { lat, lon, id, city }: {
     lat: number
     lon: number
+    id: number
+    city: string
   } ) => {
-    dispatch( updateCardById( { id, lat, lon } ) )
+    try {
+      dispatch( setLoading( true ) )
+      dispatch( updateCard( { lat, lon, id, city } ) )
+    } catch {
+      dispatch( setError( ErrorType.UPDATE_CARD ) )
+    } finally {
+      dispatch( setLoading( false ) )
+      dispatch( setError( ErrorType.NONE ) )
+    }
   }
 
   return (
@@ -78,8 +107,11 @@ export const Home: FC = () => {
         key={card.city}
         weatherData={card}
         removeCard={removeCard}
-        updateCard={updateCard}
+        updateCard={updateWeather}
+        isLoading={isLoading}
       /> )}
+
+      {isError && <Notification title={isError} /> }
 
     </div>
   )
