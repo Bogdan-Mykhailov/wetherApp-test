@@ -39,8 +39,8 @@ export const Search: React.FC<Props> = ( {
   return (
     <div>
       <AsyncPaginate
-        placeholder="Search for city"
-        debounceTimeout={1000}
+        placeholder="Enter the city"
+        debounceTimeout={700}
         value={search}
         onChange={handleOnChange}
         loadOptions={loadOptions}

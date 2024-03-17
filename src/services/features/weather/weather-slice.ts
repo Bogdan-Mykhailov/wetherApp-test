@@ -1,4 +1,8 @@
-import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from '@reduxjs/toolkit'
 import { WeatherModel } from '../../../api/geo/model'
 import { setLoading } from '../app'
 import { API_KEY, WEATHER_API_URL } from '../../../api/geo/geo'
@@ -51,7 +55,12 @@ const weather = createSlice( {
   },
 } )
 
-export const updateCard = ( { lat, lon, id, city }: {
+export const updateCard = ( {
+  lat,
+  lon,
+  id,
+  city,
+}: {
   lat: number
   lon: number
   id: number
@@ -63,7 +72,11 @@ export const updateCard = ( { lat, lon, id, city }: {
       lat}&lon=${lon}&appid=${API_KEY}&units=metric` )
     const updatedData: WeatherModel = await response.json()
     updatedData.city = city
-    dispatch( setWeatherData( { id, city, 'data': updatedData } ) )
+    dispatch( setWeatherData( {
+      id,
+      city,
+      'data': updatedData,
+    } ) )
     dispatch( setLoading( false ) )
   } catch ( error ) {
     dispatch( setLoading( false ) )

@@ -1,0 +1,12 @@
+.card {
+  width: 380px;
+}
+
+.cardContent {
+  display: flex;
+  gap: 40px;
+}
+
+.cardMeta {
+  width: 65%;
+}

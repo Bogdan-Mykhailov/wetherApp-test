@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { ErrorType } from '../../types/Types.ts'
 import { MainRoutes } from '../../routes'
 import { Spin } from 'antd'
+import './Login.css'
 
 export const Login = () => {
   const auth = getAuth( app )
@@ -21,18 +22,9 @@ export const Login = () => {
     } )
   }, [auth] )
 
-  return user === null ? <div
-    style={{
-      'width': '100vw',
-      'height': '100vh',
-      'display': 'flex',
-      'alignItems': 'center',
-      'justifyContent': 'center',
-    }}>
+  return user === null ? <div className='loginContainer'>
     <Spin size='large' tip="Loading...">
-      <div style={{
-        'padding': '50px',
-      }}/>
+      <div className='loadingPlaceholder'/>
     </Spin>
   </div> : <MainRoutes/>
 }

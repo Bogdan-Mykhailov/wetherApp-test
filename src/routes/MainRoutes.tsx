@@ -1,19 +1,20 @@
-import { Navigate, Route, RouteProps, Routes } from 'react-router-dom'
+import { Route, RouteProps, Routes } from 'react-router-dom'
 import { FC } from 'react'
 
 import { RoutePath } from './RoutesPath'
 import { DetailedWeatherInfo, Home, NotFound } from '../pages'
 import { PATH } from './types'
+import { Navigate } from 'react-router'
 
 export const routeConfig: Record<PATH, RouteProps> = {
   [PATH.Main]: {
     'path': RoutePath.main,
-    'element': <Home />,
+    'element': <Navigate to={PATH.Home} replace />,
   },
 
   [PATH.Home]: {
     'path': RoutePath.home,
-    'element': <Navigate to={PATH.Home} replace />,
+    'element': <Home />,
   },
 
   [PATH.Info]: {

@@ -1,4 +1,9 @@
-import { MainCard, Notification, Search, Video } from '../../components'
+import {
+  MainCard,
+  Notification,
+  Search,
+  Video,
+} from '../../components'
 import {
   addCard,
   removeCardById,
@@ -16,6 +21,7 @@ import { FC, useState } from 'react'
 import { ResponseDataModel } from '../../api/geo/model.ts'
 import { ErrorType } from '../../types/Types.ts'
 import { MAIN_PAGE_VIDEO_PATH } from '../../utils/constants.ts'
+import './Home.css'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
@@ -30,7 +36,7 @@ export const Home: FC = () => {
       lat}&lon=${lon}&appid=${API_KEY}&units=metric` )
 
     if ( !weatherResponse.ok || !forecastResponse.ok ) {
-      throw new Error( 'Failed to fetch weather data' )
+      dispatch( setError( ErrorType.FETCHING_DATA ) )
     }
 
     const weatherData = await weatherResponse.json()
@@ -64,6 +70,7 @@ export const Home: FC = () => {
       dispatch( setError( ErrorType.FETCHING_DATA ) )
     } finally {
       dispatch( setLoading( false ) )
+      dispatch( setError( ErrorType.NONE ) )
     }
   }
 
@@ -80,24 +87,38 @@ export const Home: FC = () => {
     }
   }
 
-  const updateWeather = ( { lat, lon, id, city }: {
+  const updateWeather = ( {
+    lat,
+    lon,
+    id,
+    city,
+  }: {
     lat: number
     lon: number
     id: number
     city: string
   } ) => {
-    dispatch( updateCard( { lat, lon, id, city } ) )
+    try {
+      dispatch( setLoading( true ) )
+      dispatch( updateCard( {
+        lat,
+        lon,
+        id,
+        city,
+      } ) )
+    } catch {
+      dispatch( setError( ErrorType.REMOVE_CARD ) )
+    } finally {
+      dispatch( setLoading( false ) )
+      dispatch( setError( ErrorType.NONE ) )
+    }
   }
 
   return (
     <Video path={MAIN_PAGE_VIDEO_PATH}>
-      <div style={{ 'width': '100%', 'padding': '40px 0' }}>
+      <div className='homeContainer'>
 
-        <div style={{
-          'width': '40%',
-          'margin': '0 auto',
-          'marginBottom': '30px',
-        }}>
+        <div className='searchWrapper'>
           <Search
             search={search}
             setSearch={setSearch}
@@ -105,18 +126,8 @@ export const Home: FC = () => {
           />
         </div>
 
-        <div style={{
-          'width': '80%',
-          'margin': '0 auto',
-          'overflow': 'scroll',
-          'maxHeight': '80vh',
-        }}>
-          <div style={{
-            'display': 'flex',
-            'flexWrap': 'wrap',
-            'justifyContent': 'center',
-            'gap': 20,
-          }}>
+        <div className='scrolledContainerWrapper'>
+          <div className='cardsWrapper'>
             {cards.map( ( card ) => <MainCard
               key={card.city}
               weatherData={card}

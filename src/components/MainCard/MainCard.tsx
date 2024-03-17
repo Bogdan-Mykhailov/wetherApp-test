@@ -5,6 +5,7 @@ import { DeleteOutlined, EnterOutlined, SyncOutlined } from '@ant-design/icons'
 import { WeatherModel } from '../../api/geo/model'
 import { useNavigate } from 'react-router'
 import { capitalizeFirstLetter } from '../../utils/helpers.ts'
+import './MainCard.css'
 
 type CardType = {
   lat: number
@@ -25,32 +26,50 @@ export const MainCard: FC<Props> = ( {
   updateCard,
 } ) => {
   const navigate = useNavigate()
-  const { city, id, weather, coord, main } = weatherData!
+  const {
+    city,
+    id,
+    weather,
+    coord,
+    main,
+  } = weatherData!
   const { lat, lon } = coord
 
   const updateData = () => {
-    updateCard( { lat, lon, id, city } )
+    updateCard( {
+      lat,
+      lon,
+      id,
+      city,
+    } )
   }
 
   return (
     <Card
-      style={{ 'width': 380 }}
+      className='card'
       actions={[
         <DeleteOutlined
-          key="delete" onClick={() => removeCard( id )}/>,
+          key="delete"
+          onClick={() => removeCard( id )}
+        />,
         <SyncOutlined
+          key="sync"
           onClick={updateData}
         />,
         <EnterOutlined
+          key="enter"
           onClick={() => navigate( `/info/${id}` )}
         />,
       ]}
     >
-      <div style={{ 'display': 'flex', 'gap': 40 }}>
+      <div className='cardContent'>
         <Meta
-          style={{ 'width': '65%' }}
+          className='cardMeta'
           avatar={
-            <Avatar src={`icons/${weather[0].icon}.png`} alt="Weather icon"/>
+            <Avatar
+              src={`icons/${weather[0].icon}.png`}
+              alt="Weather icon"
+            />
           }
           title={city}
           description={capitalizeFirstLetter( weather[0].description )}

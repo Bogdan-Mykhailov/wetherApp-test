@@ -1,0 +1,52 @@
+.weatherInfo {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px dashed black;
+    border-radius: 8px;
+    padding: 0 30px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.weatherInfoRow {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.weatherDescription {
+    display: flex;
+    flex-direction: column;
+}
+
+.weatherDescriptionText {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 26px;
+}
+
+.temperatureText {
+    font-size: 30px;
+    margin: 0;
+}
+
+.infoList {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.infoItem {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.weatherIcon {
+    width: 90px;
+}
