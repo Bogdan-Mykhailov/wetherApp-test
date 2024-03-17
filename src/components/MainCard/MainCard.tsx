@@ -67,7 +67,11 @@ export const MainCard: FC<Props> = ( {
           className='cardMeta'
           avatar={
             <Avatar
-              src={`icons/${weather[0].icon}.png`}
+              style={{
+                'width': 'max-content',
+                'height': '30px',
+              }}
+              src={`card-icons/${weather[0].icon}.png`}
               alt="Weather icon"
             />
           }

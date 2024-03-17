@@ -24,7 +24,7 @@ export const Forecast: FC<Props> = ( { forecasts } ) => {
         <div className='forecastWrapper'>
           <img
             className='forecastIcon'
-            src={`icons/${day.weather[0].icon}.png`}
+            src={`icons/${day.weather[0].icon}.svg`}
             alt="weatherIcon"
           />
           <label>{forecastDays[idx]}</label>

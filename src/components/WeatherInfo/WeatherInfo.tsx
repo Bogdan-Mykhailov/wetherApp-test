@@ -64,7 +64,7 @@ export const WeatherInfo: FC<Props> = ( { cards } ) => {
           </ul>
           <img
             className='weatherIcon'
-            src={`icons/${weather[0].icon}.png`}
+            src={`icons/${weather[0].icon}.svg`}
             alt="Weather icon"
           />
         </div>
