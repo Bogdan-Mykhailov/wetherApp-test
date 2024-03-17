@@ -4,6 +4,7 @@ import Meta from 'antd/es/card/Meta'
 import { DeleteOutlined, EnterOutlined, SyncOutlined } from '@ant-design/icons'
 import { WeatherModel } from '../../api/geo/model'
 import { useNavigate } from 'react-router'
+import { capitalizeFirstLetter } from '../../utils/helpers.ts'
 
 type CardType = {
   lat: number
@@ -13,20 +14,18 @@ type CardType = {
 }
 
 interface Props {
-  weatherData: WeatherModel
+  weatherData?: WeatherModel
   removeCard: ( id: number ) => void
   updateCard: ( card: CardType ) => void
-  isLoading: boolean
 }
 
 export const MainCard: FC<Props> = ( {
   weatherData,
   removeCard,
   updateCard,
-  isLoading,
 } ) => {
   const navigate = useNavigate()
-  const { city, id, weather, coord, main } = weatherData
+  const { city, id, weather, coord, main } = weatherData!
   const { lat, lon } = coord
 
   const updateData = () => {
@@ -47,7 +46,6 @@ export const MainCard: FC<Props> = ( {
         <DeleteOutlined
           key="delete" onClick={() => removeCard( id )}/>,
         <SyncOutlined
-          spin={isLoading}
           onClick={updateData}
         />,
         <EnterOutlined
@@ -62,7 +60,7 @@ export const MainCard: FC<Props> = ( {
             <Avatar src={`icons/${weather[0].icon}.png`} alt="Weather icon"/>
           }
           title={city}
-          description={weather[0].description}
+          description={capitalizeFirstLetter( weather[0].description )}
         />
         <Meta
           title={`${Math.round( main.temp )}°C`}

@@ -11,14 +11,14 @@ export const routeConfig: Record<PATH, RouteProps> = {
     'element': <Home />,
   },
 
-  [PATH.Info]: {
-    'path': RoutePath.info,
-    'element': <DetailedWeatherInfo />,
-  },
-
   [PATH.Home]: {
     'path': RoutePath.home,
     'element': <Navigate to={PATH.Home} replace />,
+  },
+
+  [PATH.Info]: {
+    'path': RoutePath.info,
+    'element': <DetailedWeatherInfo />,
   },
 
   [PATH.Error]: {

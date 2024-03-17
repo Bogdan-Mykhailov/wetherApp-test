@@ -24,14 +24,13 @@ const weather = createSlice( {
     }> ) => {
       const { id, city, data } = action.payload
       const isDuplicate = state.cards
-        .some( ( card ) => card.city === city )
+        .some( ( card ) => card.id === id && card.city === city )
       if ( !isDuplicate ) {
-        state.cards = state.cards.map( ( card ) => {
-          if ( card.id === id ) {
-            return data
-          }
-          return card
-        } )
+        const index = state.cards
+          .findIndex( ( card ) => card.id === id && card.city === city )
+        if ( index !== -1 ) {
+          state.cards[index] = data
+        }
       }
       localStorage.setItem( 'cards', JSON.stringify( state.cards ) )
     },

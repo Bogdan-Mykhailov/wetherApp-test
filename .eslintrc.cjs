@@ -10,6 +10,7 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     "@typescript-eslint/naming-convention": "off",
+    "consistent-return": "off",
     "no-confusing-arrow": "off",
     "no-unused-vars": "off",
     "id-blacklist": "off",

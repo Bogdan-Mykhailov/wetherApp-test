@@ -2,6 +2,7 @@ import { MainCard, Notification, Search } from '../../components'
 import {
   addCard,
   removeCardById,
+  removeForecastById,
   setError,
   setForecastData,
   setLoading,
@@ -17,7 +18,7 @@ import { ErrorType } from '../../types/Types.ts'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
-  const { isError, isLoading } = useAppSelector( ( state ) => state.app )
+  const { isError } = useAppSelector( ( state ) => state.app )
   const cards = useAppSelector( ( state ) => state.weather.cards )
   const [search, setSearch] = useState<ResponseDataModel | null>( null )
 
@@ -69,6 +70,7 @@ export const Home: FC = () => {
     try {
       dispatch( setLoading( true ) )
       dispatch( removeCardById( id ) )
+      dispatch( removeForecastById( id ) )
     } catch {
       dispatch( setError( ErrorType.REMOVE_CARD ) )
     } finally {
@@ -83,34 +85,45 @@ export const Home: FC = () => {
     id: number
     city: string
   } ) => {
-    try {
-      dispatch( setLoading( true ) )
-      dispatch( updateCard( { lat, lon, id, city } ) )
-    } catch {
-      dispatch( setError( ErrorType.UPDATE_CARD ) )
-    } finally {
-      dispatch( setLoading( false ) )
-      dispatch( setError( ErrorType.NONE ) )
-    }
+    dispatch( updateCard( { lat, lon, id, city } ) )
   }
 
   return (
-    <div>
-      <Search
-        search={search}
-        setSearch={setSearch}
-        onSearchChange={handleOnSearchChange}
-      />
+    <div style={{ 'width': '100%', 'padding': '40px 0' }}>
+      <div style={{
+        'width': '40%',
+        'margin': '0 auto',
+        'marginBottom': '30px',
+      }}>
+        <Search
+          search={search}
+          setSearch={setSearch}
+          onSearchChange={handleOnSearchChange}
+        />
+      </div>
 
-      {cards.map( ( card ) => <MainCard
-        key={card.city}
-        weatherData={card}
-        removeCard={removeCard}
-        updateCard={updateWeather}
-        isLoading={isLoading}
-      /> )}
+      <div style={{
+        'width': '80%',
+        'margin': '0 auto',
+        'overflow': 'scroll',
+        'maxHeight': '80vh',
+      }}>
+        <div style={{
+          'display': 'flex',
+          'flexWrap': 'wrap',
+          'justifyContent': 'center',
+          'gap': 20,
+        }}>
+          {cards.map( ( card ) => <MainCard
+            key={card.city}
+            weatherData={card}
+            removeCard={removeCard}
+            updateCard={updateWeather}
+          /> )}
+        </div>
+      </div>
 
-      {isError && <Notification title={isError} /> }
+      {isError && <Notification title={isError}/>}
 
     </div>
   )
