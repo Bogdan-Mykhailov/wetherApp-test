@@ -4,6 +4,8 @@ import { useAppSelector } from '../../services'
 import { Collapse, Divider } from 'antd'
 import { capitalizeFirstLetter, forecastDays } from '../../utils/helpers.ts'
 import { LeftSquareOutlined } from '@ant-design/icons'
+import { INFO_PAGE_VIDEO_PATH } from '../../utils/constants.ts'
+import { Video } from '../../components'
 
 export const DetailedWeatherInfo: FC = () => {
   const { id } = useParams()
@@ -113,105 +115,115 @@ export const DetailedWeatherInfo: FC = () => {
   } ) )
 
   return (
-    <>
-      <LeftSquareOutlined style={{
-        'margin': '10px 20px',
-        'fontSize': '24px',
-      }} onClick={handleClick}/>
+    <Video path={INFO_PAGE_VIDEO_PATH}>
+      <div style={{ 'width': '100%' }}>
+        <LeftSquareOutlined style={{
+          'margin': '10px 20px',
+          'fontSize': '24px',
+          'color': 'white',
+        }} onClick={handleClick}/>
 
-      <Divider
-        orientation="left"
-        style={{ 'fontSize': '28px', 'margin': 0 }}
-      >
-        {city}
-      </Divider>
-      <div style={{
-        'width': '40%',
-        'display': 'flex',
-        'flexDirection': 'column',
-        'alignItems': 'center',
-        'justifyContent': 'space-between',
-        'border': '1px dashed gray',
-        'borderRadius': 8,
-        'padding': '0 30px',
-        'boxSizing': 'border-box',
-        'margin': '0 auto',
-      }}>
+        <Divider
+          orientation="left"
+          style={{ 'color': 'white', 'fontSize': '28px', 'margin': 0 }}
+        >
+          {city}
+        </Divider>
         <div style={{
-          'width': '100%',
+          'backgroundColor': 'rgba(255, 255, 255, 0.8)',
+          'width': '40%',
           'display': 'flex',
+          'flexDirection': 'column',
           'alignItems': 'center',
           'justifyContent': 'space-between',
+          'border': '1px dashed black',
+          'borderRadius': 8,
+          'padding': '0 30px',
+          'boxSizing': 'border-box',
+          'margin': '0 auto',
         }}>
-          <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
-            <p style={{
-              'margin': 0,
-              'padding': '10px 0',
-              'fontSize': '26px',
-            }}
-            >
-              {capitalizeFirstLetter( weather[0].description )}
-            </p>
+          <div style={{
+            'width': '100%',
+            'display': 'flex',
+            'alignItems': 'center',
+            'justifyContent': 'space-between',
+          }}>
+            <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
+              <p style={{
+                'margin': 0,
+                'padding': '10px 0',
+                'fontSize': '26px',
+              }}
+              >
+                {capitalizeFirstLetter( weather[0].description )}
+              </p>
+            </div>
+            <div>
+              <p style={{
+                'fontSize': '30px',
+                'margin': 0,
+              }}>
+                {Math.round( main.temp )}°C
+              </p>
+            </div>
           </div>
-          <div>
-            <p style={{
-              'fontSize': '30px',
+
+          <div style={{
+            'width': '100%',
+            'display': 'flex',
+            'alignItems': 'center',
+            'justifyContent': 'space-between',
+          }}>
+            <ul style={{
+              'width': '100%',
+              'listStyle': 'none',
+              'padding': 0,
               'margin': 0,
             }}>
-              {Math.round( main.temp )}°C
-            </p>
+              <li style={{
+                'marginBottom': '5px',
+                'fontSize': '16px',
+              }}>{`Feels like: ${Math.round( main.feels_like )}°C`}</li>
+              <li style={{
+                'marginBottom': '5px',
+                'fontSize': '16px',
+              }}>{`Wind: ${wind.speed} m/s`}</li>
+              <li style={{
+                'marginBottom': '5px',
+                'fontSize': '16px',
+              }}>{`Humidity: ${main.humidity}%`}</li>
+              <li style={{
+                'marginBottom': '5px',
+                'fontSize': '16px',
+              }}>{`Pressure: ${main.pressure} hPa`}</li>
+            </ul>
+            <img
+              style={{ 'width': 90 }}
+              src={`icons/${weather[0].icon}.png`}
+              alt="Weather icon"
+            />
           </div>
         </div>
 
-        <div style={{
-          'width': '100%',
-          'display': 'flex',
-          'alignItems': 'center',
-          'justifyContent': 'space-between',
-        }}>
-          <ul style={{
-            'width': '100%',
-            'listStyle': 'none',
-            'padding': 0,
-            'margin': 0,
-          }}>
-            <li style={{
-              'marginBottom': '5px',
-              'fontSize': '16px',
-            }}>{`Feels like: ${Math.round( main.feels_like )}°C`}</li>
-            <li style={{
-              'marginBottom': '5px',
-              'fontSize': '16px',
-            }}>{`Wind: ${wind.speed} m/s`}</li>
-            <li style={{
-              'marginBottom': '5px',
-              'fontSize': '16px',
-            }}>{`Humidity: ${main.humidity}%`}</li>
-            <li style={{
-              'marginBottom': '5px',
-              'fontSize': '16px',
-            }}>{`Pressure: ${main.pressure} hPa`}</li>
-          </ul>
-          <img
-            style={{ 'width': 90 }}
-            src={`icons/${weather[0].icon}.png`}
-            alt="Weather icon"
-          />
-        </div>
+        <Divider
+          orientation="center"
+          style={{ 'color': 'white' }}
+        >
+          Weekly Forecast
+        </Divider>
+
+        <Collapse
+          accordion
+          style={{
+            'backgroundColor': 'rgba(255, 255, 255, 0.8)',
+            'width': '70%',
+            'margin': '0 auto',
+            'marginBottom': '10px',
+          }}
+          size="small"
+          items={items}
+        />
       </div>
-
-      <Divider orientation="center">Weekly Forecast</Divider>
-
-      <Collapse
-        accordion
-        style={{
-          'width': '70%',
-          'margin': '0 auto',
-          'marginBottom': '10px',
-        }}
-        size="small"
-        items={items}
-      />
-    </>
+    </Video>
   )
 }

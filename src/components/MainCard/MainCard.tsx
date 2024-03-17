@@ -35,13 +35,6 @@ export const MainCard: FC<Props> = ( {
   return (
     <Card
       style={{ 'width': 380 }}
-      cover={
-        <img
-          style={{ 'height': 200 }}
-          alt="Card walpaper"
-          src={`images/${weather[0].icon}.png`}
-        />
-      }
       actions={[
         <DeleteOutlined
           key="delete" onClick={() => removeCard( id )}/>,

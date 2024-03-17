@@ -1,4 +1,4 @@
-import { MainCard, Notification, Search } from '../../components'
+import { MainCard, Notification, Search, Video } from '../../components'
 import {
   addCard,
   removeCardById,
@@ -15,6 +15,7 @@ import { API_KEY, WEATHER_API_URL } from '../../api/geo/geo'
 import { FC, useState } from 'react'
 import { ResponseDataModel } from '../../api/geo/model.ts'
 import { ErrorType } from '../../types/Types.ts'
+import { MAIN_PAGE_VIDEO_PATH } from '../../utils/constants.ts'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
@@ -89,42 +90,45 @@ export const Home: FC = () => {
   }
 
   return (
-    <div style={{ 'width': '100%', 'padding': '40px 0' }}>
-      <div style={{
-        'width': '40%',
-        'margin': '0 auto',
-        'marginBottom': '30px',
-      }}>
-        <Search
-          search={search}
-          setSearch={setSearch}
-          onSearchChange={handleOnSearchChange}
-        />
-      </div>
+    <Video path={MAIN_PAGE_VIDEO_PATH}>
+      <div style={{ 'width': '100%', 'padding': '40px 0' }}>
 
-      <div style={{
-        'width': '80%',
-        'margin': '0 auto',
-        'overflow': 'scroll',
-        'maxHeight': '80vh',
-      }}>
         <div style={{
-          'display': 'flex',
-          'flexWrap': 'wrap',
-          'justifyContent': 'center',
-          'gap': 20,
+          'width': '40%',
+          'margin': '0 auto',
+          'marginBottom': '30px',
         }}>
-          {cards.map( ( card ) => <MainCard
-            key={card.city}
-            weatherData={card}
-            removeCard={removeCard}
-            updateCard={updateWeather}
-          /> )}
+          <Search
+            search={search}
+            setSearch={setSearch}
+            onSearchChange={handleOnSearchChange}
+          />
         </div>
+
+        <div style={{
+          'width': '80%',
+          'margin': '0 auto',
+          'overflow': 'scroll',
+          'maxHeight': '80vh',
+        }}>
+          <div style={{
+            'display': 'flex',
+            'flexWrap': 'wrap',
+            'justifyContent': 'center',
+            'gap': 20,
+          }}>
+            {cards.map( ( card ) => <MainCard
+              key={card.city}
+              weatherData={card}
+              removeCard={removeCard}
+              updateCard={updateWeather}
+            /> )}
+          </div>
+        </div>
+
+        {isError && <Notification title={isError}/>}
+
       </div>
-
-      {isError && <Notification title={isError}/>}
-
-    </div>
+    </Video>
   )
 }
