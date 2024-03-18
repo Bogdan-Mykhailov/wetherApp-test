@@ -2,7 +2,7 @@ import { Route, RouteProps, Routes } from 'react-router-dom'
 import { FC } from 'react'
 
 import { RoutePath } from './RoutesPath'
-import { DetailedWeatherInfo, Home, NotFound } from '../pages'
+import { DetailedWeatherInfo, Home, Login, NotFound } from '../pages'
 import { PATH } from './types'
 import { Navigate } from 'react-router'
 
@@ -26,15 +26,16 @@ export const routeConfig: Record<PATH, RouteProps> = {
     'path': RoutePath.error,
     'element': <NotFound />,
   },
+
+  [PATH.Login]: {
+    'path': RoutePath.login,
+    'element': <Login />,
+  },
 }
 
 export const MainRoutes: FC = () => <Routes>
-  {Object
-    .values( routeConfig )
-    .map( ( {
-      path,
-      element,
-    } ) => <Route
+  {Object.values( routeConfig )
+    .map( ( { path, element } ) => <Route
       path={path}
       key={path}
       element={element}

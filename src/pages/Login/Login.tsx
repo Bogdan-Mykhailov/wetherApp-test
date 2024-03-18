@@ -1,30 +1,43 @@
-import { User, getAuth, signInWithPopup } from 'firebase/auth'
+import { FC } from 'react'
+import { getAuth, signInWithPopup } from 'firebase/auth'
 import { app, provider } from '../../../firebase.ts'
-import { useEffect, useState } from 'react'
-import { ErrorType } from '../../types/Types.ts'
-import { MainRoutes } from '../../routes'
-import { Spin } from 'antd'
 import './Login.css'
+import { ErrorType } from '../../types/Types.ts'
+import { setError, setLoading, setLogin, useAppDispatch, useAppSelector } from '../../services'
+import { Button } from 'antd'
 
-export const Login = () => {
+export const Login: FC = () => {
   const auth = getAuth( app )
-  const [user, setUser] = useState<User | null>( auth.currentUser )
+  const dispatch = useAppDispatch()
+  const isLoading = useAppSelector( ( state ) => state.app.isLoading )
 
-  useEffect( () => {
-    return auth.onAuthStateChanged( ( maybeUser ) => {
-      if ( maybeUser !== null ) {
-        return setUser( maybeUser )
+  const handleGoogleLogin = async () => {
+    dispatch( setLoading( true ) )
+    try {
+      if ( auth.currentUser === null ) {
+        const result = await signInWithPopup( auth, provider )
+        if ( result.user !== null ) {
+          dispatch( setLogin( result.user.uid ) )
+        }
+      } else {
+        dispatch( setLogin( auth.currentUser.uid ) )
       }
+    } catch {
+      dispatch( setError( ErrorType.AUTH ) )
+    } finally {
+      dispatch( setLoading( false ) )
+      dispatch( setError( ErrorType.NONE ) )
+    }
+  }
 
-      signInWithPopup( auth, provider )
-        .then( ( credentials ) => setUser( credentials.user ) )
-        .catch( ( ) => ErrorType.AUTH )
-    } )
-  }, [auth] )
-
-  return user === null ? <div className='loginContainer'>
-    <Spin size='large' tip="Loading...">
-      <div className='loadingPlaceholder'/>
-    </Spin>
-  </div> : <MainRoutes/>
+  return (
+    <div className='loginContainer'>
+      <Button
+        loading={isLoading}
+        onClick={handleGoogleLogin}
+      >
+        Login with Google
+      </Button>
+    </div>
+  )
 }

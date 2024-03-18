@@ -3,6 +3,7 @@ import {
   appSlice,
   forecastSlice,
   weatherSlice,
+  authSlice,
 } from './features'
 
 export const store = configureStore( {
@@ -10,6 +11,7 @@ export const store = configureStore( {
     'app': appSlice,
     'weather': weatherSlice,
     'forecast': forecastSlice,
+    'auth': authSlice,
   },
 } )
 

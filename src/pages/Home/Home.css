@@ -22,3 +22,37 @@
     justify-content: center;
     gap: 20px;
 }
+
+.logoutButton {
+    position: relative;
+    top: 30px;
+    left: 30px;
+}
+
+.welcomeBlock {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px 0 0;
+}
+
+.welcomeTitle {
+    color: white;
+    font-size: 28px;
+    font-weight: lighter;
+}
+
+.welcomeTitleName {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.welcomeSubtitle {
+    color: white;
+    font-size: 16px;
+    font-weight: lighter;
+    margin: 0;
+    padding: 0;
+}

@@ -1,1 +1,1 @@
-export * from './DetailedWeatherInfo';
+export * from './DetailedWeatherInfo.tsx'

@@ -3,4 +3,5 @@ export enum PATH {
   Info = 'info',
   Home = 'home',
   Error = 'error',
+  Login = 'login',
 }

@@ -10,24 +10,44 @@ import {
   removeForecastById,
   setError,
   setForecastData,
-  setLoading,
+  setLoading, setLogout,
   setWeatherData,
   updateCard,
   useAppDispatch,
   useAppSelector,
 } from '../../services'
 import { API_KEY, WEATHER_API_URL } from '../../api/geo/geo'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { ResponseDataModel } from '../../api/geo/model.ts'
 import { ErrorType } from '../../types/Types.ts'
 import { MAIN_PAGE_VIDEO_PATH } from '../../utils/constants.ts'
 import './Home.css'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { Button } from 'antd'
 
 export const Home: FC = () => {
   const dispatch = useAppDispatch()
   const { isError } = useAppSelector( ( state ) => state.app )
   const cards = useAppSelector( ( state ) => state.weather.cards )
   const [search, setSearch] = useState<ResponseDataModel | null>( null )
+  const [userName, setUserName] = useState<string | null>( null )
+  const [email, setEmail] = useState<string | null>( null )
+
+  useEffect( () => {
+    const auth = getAuth()
+    const unsubscribe = onAuthStateChanged( auth, ( user ) => {
+      if ( user ) {
+        const { displayName, email } = user
+        setUserName( displayName )
+        setEmail( email )
+      } else {
+        setUserName( null )
+        setEmail( null )
+      }
+    } )
+
+    return () => unsubscribe()
+  }, [] )
 
   const fetchWeatherData = async ( lat: string, lon: string ) => {
     const weatherResponse = await fetch( `${WEATHER_API_URL}/weather?lat=${
@@ -114,8 +134,28 @@ export const Home: FC = () => {
     }
   }
 
+  const handleLogoutClick = () => {
+    dispatch( setLogout() )
+  }
+
   return (
     <Video path={MAIN_PAGE_VIDEO_PATH}>
+      <Button
+        type="default"
+        size='small'
+        className='logoutButton'
+        onClick={handleLogoutClick}
+      >
+        Logout
+      </Button>
+      <div className='welcomeBlock'>
+        <span className='welcomeTitle'>Welcome, <span className='welcomeTitleName'>
+          {userName}
+        </span>
+        </span>
+        <p className='welcomeSubtitle'>{email}</p>
+      </div>
+
       <div className='homeContainer'>
 
         <div className='searchWrapper'>
