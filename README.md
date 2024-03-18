@@ -1,6 +1,6 @@
 # Weather App
 
-<a href='https://wether-app-five.vercel.app/' rel='nofollow'>
+<a href='https://wether-app-five.vercel.app/#/home' rel='nofollow'>
 <img src="https://img.shields.io/badge/Weather_App-4e93e6?style=for-the-badge&logo=todo&logoColor=black" alt="todolist">
 </a>
 
