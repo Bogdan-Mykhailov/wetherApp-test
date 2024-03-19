@@ -9,7 +9,7 @@ export const App: FC = () => {
 
   useEffect( () => {
     if ( isAuthenticated ) {
-      navigate( '/' )
+      navigate( '/home' )
     } else {
       navigate( '/login' )
     }
